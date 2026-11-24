@@ -1,0 +1,5 @@
+*.log
+settings.json
+VencordRepairError_*.txt
+Thumbs.db
+.DS_Store
