@@ -10,8 +10,8 @@
     repair, repair-plugins and dry-run modes.
 
 .NOTES
-    Run: powershell -STA -ExecutionPolicy Bypass -File .\VencordSetup.ps1
-    One-line: irm https://raw.githubusercontent.com/yetilukoss/vencord-setup/main/install.ps1 | iex
+    Run: powershell -STA -ExecutionPolicy RemoteSigned -File .\VencordSetup.ps1
+    One-line: see README.md. hash-gated launcher, no iex.
 
     Requires: Windows 10/11, PowerShell 5.1+, Node.js >= 22, Git, pnpm.
 #>
@@ -249,24 +249,26 @@ function Show-Terms {
 
     Write-Box 'TERMS OF USE (detailed)' @(
         '1. AS-IS: no warranty, no guarantee of fitness for purpose.',
-        '2. ACCOUNT RISK: client mods violate Discord ToS. You accept all risk.',
-        '3. THIRD-PARTY CODE: plugins are authored by others. Review source.',
+        '2. ACCOUNT RISK: unauthorized client mods violate Discord ToS. You accept all risk.',
+        '3. THIRD-PARTY CODE: community plugins are not official or verified.',
         '4. NO REDISTRIBUTION of patched Discord binaries.',
-        '5. LICENSES: setup code MIT; Vencord GPL-3.0; DiscordTabs source headers',
-        '   declare GPL-3.0-or-later; other plugins have no license file.',
+        '5. LICENSES: setup code MIT; Vencord GPL-3.0-or-later (package.json).',
+        '   Quest, DiscordTabs and bigFileUpload declare GPL-3.0-or-later in',
+        '   source headers; no plugin repo ships a LICENSE file.',
         '6. NO MALICIOUS USE: do not use this to harm others or violate terms.',
         '7. AGE: you must be old enough to use Discord in your region.',
         '8. ACCEPTANCE: continuing = you accept all terms above.'
     ) 'Cyan'
 
     Write-Box 'CREDITS' @(
-        'Vencord by Vendicated (GPL-3.0) - github.com/Vendicated/Vencord',
+        'Vencord by Vendicated (GPL-3.0-or-later) - github.com/Vendicated/Vencord',
         'Quest-Auto-Complete by BlockTol - github.com/BlockTol/Quest-Auto-Complete',
         'Discord-Fake-Deafen by BlockTol - github.com/BlockTol/Discord-Fake-Deafen',
         'Discord-Server-Cloner by BlockTol - github.com/BlockTol/Discord-Server-Cloner',
         'DiscordTabs by BlockTol - github.com/BlockTol/DiscordTabs',
-        'bigFileUpload by ScattrdBlade - github.com/ScattrdBlade/bigFileUpload',
-        'Icons: iconoir.com outline reference. Sounds: bencho.dev reference.',
+        'bigFileUpload by ScattrdBlade, creations, keircn - github.com/ScattrdBlade/bigFileUpload',
+        'Community plugins: not official, verified, endorsed or supported by Vencord or Discord.',
+        'Icons: iconoir.com / Luca Baggi (MIT). Sounds: bencho.dev names, synthesized tones.',
         'Setup code: MIT (c) 2026 yetilukoss.'
     ) 'Cyan'
 

@@ -8,7 +8,7 @@
     user scrolls to the end and clicks "I AGREE TO THE TERMS", then "Next".
 
 .NOTES
-    Run:  powershell -STA -ExecutionPolicy Bypass -File .\VencordSetupGUI.ps1
+    Run:  powershell -STA -ExecutionPolicy RemoteSigned -File .\VencordSetupGUI.ps1
     Requires: Windows 10/11, PowerShell 5.1+, .NET 4.5+ (built in).
 #>
 
@@ -18,7 +18,7 @@
 if ([System.Threading.Thread]::CurrentThread.GetApartmentState() -ne 'STA') {
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = 'powershell.exe'
-    $psi.Arguments = "-STA -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    $psi.Arguments = "-STA -ExecutionPolicy RemoteSigned -File `"$PSCommandPath`""
     $psi.UseShellExecute = $true
     [System.Diagnostics.Process]::Start($psi) | Out-Null
     exit
@@ -378,7 +378,7 @@ function Play-Sound([string]$Name) {
     </Grid.RowDefinitions>
 
     <!-- Header -->
-    <Border Grid.Row="0" Background="#181825" Padding="18,0">
+    <Border x:Name="HeaderBar" Grid.Row="0" Background="#181825" Padding="18,0">
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto"/>
@@ -414,12 +414,12 @@ function Play-Sound([string]$Name) {
           <StackPanel MaxWidth="760" HorizontalAlignment="Center">
             <TextBlock Text="Welcome" FontSize="24" FontWeight="Bold" Foreground="#89b4fa" Margin="0,0,0,10" HorizontalAlignment="Center"/>
             <TextBlock TextWrapping="Wrap" Foreground="#cdd6f4" Margin="0,0,0,14" TextAlignment="Center"
-              Text="This tool sets up Vencord with community userplugins (Quest-Auto-Complete, Discord-Fake-Deafen, Discord-Server-Cloner, DiscordTabs, bigFileUpload). It clones, builds and injects into Discord Stable."/>
+              Text="This tool sets up Vencord with community userplugins: Quest-Auto-Complete, Discord-Fake-Deafen, Discord-Server-Cloner, DiscordTabs and bigFileUpload. It clones, builds and injects into the selected Discord branch. These plugins are not official or verified."/>
             <Border Background="#313244" CornerRadius="10" Padding="16" Margin="0,0,0,14">
               <StackPanel>
                 <TextBlock Text="WARNING" FontWeight="Bold" Foreground="#f38ba8" Margin="0,0,0,6"/>
                 <TextBlock TextWrapping="Wrap" Foreground="#cdd6f4"
-                  Text="Client mods violate Discord's Terms of Service. Account enforcement can include bans. Your account is at risk. If your account is critical, do not proceed. Review plugin source yourself."/>
+                  Text="Unauthorized client mods violate Discord's Terms of Service. Account enforcement can include bans. Your account is at risk. If your account is critical, do not proceed. Review plugin source yourself."/>
               </StackPanel>
             </Border>
             <Border Background="#252736" CornerRadius="10" Padding="16" Margin="0,0,0,14">
@@ -427,6 +427,9 @@ function Play-Sound([string]$Name) {
                 <TextBlock Text="UPDATE LOG" FontWeight="Bold" Foreground="#a6e3a1" Margin="0,0,0,8"/>
                 <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" Margin="0,0,0,10"
                   Text="each version has a full note in the UPDATES folder of the repo"/>
+                <TextBlock Text="v2.2 - 2026-11-25" FontWeight="SemiBold" Foreground="#89b4fa" Margin="0,0,0,2"/>
+                <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" Margin="0,0,0,8"
+                  Text="one hash-gated command for every shell; cleanup keeps setup data; terms and credits corrected; full-window blur"/>
                 <TextBlock Text="v2.1 - 2026-11-24" FontWeight="SemiBold" Foreground="#89b4fa" Margin="0,0,0,2"/>
                 <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" Margin="0,0,0,8"
                   Text="fixed the pnpm working directory so build runs in the cloned folder; stops early if the clone layout is wrong"/>
@@ -553,7 +556,7 @@ function Play-Sound([string]$Name) {
           <StackPanel Margin="24">
             <TextBlock Text="Plugins to install" FontSize="24" FontWeight="Bold" Foreground="#89b4fa" Margin="0,0,0,6"/>
             <TextBlock TextWrapping="Wrap" Foreground="#a6adc8" Margin="0,0,0,14" FontSize="13"
-                       Text="Pick the BlockTol plugins to clone and build. Switch them on or off anytime."/>
+                       Text="Community userplugins. all five are selected by default. switch one off only if you want it left out of future builds."/>
 
             <Grid Margin="0,0,0,12">
               <Grid.ColumnDefinitions>
@@ -568,8 +571,9 @@ function Play-Sound([string]$Name) {
               </StackPanel>
               <Button x:Name="BtnClearAll" Grid.Column="1" Content="Clear all" Width="96" Height="32" Margin="0,0,8,0"
                       Background="#313244" BorderBrush="#585b70" BorderThickness="1" Foreground="#cdd6f4" FontWeight="Bold"/>
-              <Button x:Name="BtnSelectAll" Grid.Column="2" Content="Select all" Width="96" Height="32"
-                      Background="#313244" BorderBrush="#a6e3a1" BorderThickness="1" Foreground="#a6e3a1" FontWeight="Bold"/>
+              <Button x:Name="BtnSelectAll" Grid.Column="2" Content="Keep plugins (Recommended)" Width="210" Height="32"
+                      Background="#313244" BorderBrush="#a6e3a1" BorderThickness="1" Foreground="#a6e3a1" FontWeight="Bold"
+                      ToolTip="Keep all five plugins installed (recommended)"/>
             </Grid>
 
             <Border Style="{StaticResource PluginCard}" Margin="0,0,0,10" ToolTip="Automatically completes quests and tracks progress.">
@@ -665,7 +669,7 @@ function Play-Sound([string]$Name) {
                 </Border>
                 <StackPanel Grid.Column="1" Margin="14,0,14,0" VerticalAlignment="Center">
                   <TextBlock Text="bigFileUpload" Foreground="#cdd6f4" FontWeight="Bold" FontSize="14"/>
-                  <TextBlock Text="Bypasses Discord's upload limit via external hosts." Foreground="#a6adc8" FontSize="12" TextWrapping="Wrap" Margin="0,2,0,3"/>
+                  <TextBlock Text="Uploads over-limit files through external hosts and pastes the link." Foreground="#a6adc8" FontSize="12" TextWrapping="Wrap" Margin="0,2,0,3"/>
                   <TextBlock Text="ScattrdBlade / bigFileUpload" Foreground="#a6adc8" FontSize="11" FontFamily="Consolas"/>
                 </StackPanel>
                 <CheckBox x:Name="ChkBigFileUpload" Grid.Column="2" IsChecked="True" Style="{StaticResource ToggleSwitch}" VerticalAlignment="Center" ToolTip="Enable bigFileUpload"/>
@@ -743,11 +747,12 @@ function Play-Sound([string]$Name) {
                    Background="#11111b" Foreground="#cdd6f4" BorderBrush="#313244" FontFamily="Consolas" FontSize="11"
                    Padding="8"/>
           <Grid Grid.Row="6" Margin="0,6,0,0">
-            <Button x:Name="BtnUninstall" Width="145" Height="30" HorizontalAlignment="Left"
-                    Background="#f38ba8" BorderBrush="#f38ba8" BorderThickness="1" Foreground="#1e1e2e" FontWeight="Bold">
+            <Button x:Name="BtnUninstall" Width="260" Height="30" HorizontalAlignment="Left"
+                    Background="#f38ba8" BorderBrush="#f38ba8" BorderThickness="1" Foreground="#1e1e2e" FontWeight="Bold"
+                    ToolTip="Remove Vencord injection. keep all setup files and plugins.">
               <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Path Data="M4 7h16 M9 7V4h6v3 M6 7l1 14h10l1-14 M10 11v6 M14 11v6" Width="15" Height="15" Stretch="Uniform" Stroke="#1e1e2e" StrokeThickness="1.7" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Fill="Transparent" Margin="0,0,7,0"/>
-                <TextBlock Text="Uninstall all" VerticalAlignment="Center"/>
+                <TextBlock Text="Clean Vencord junk (Recommended)" VerticalAlignment="Center"/>
               </StackPanel>
             </Button>
             <Button x:Name="BtnExportLog" Width="135" Height="30" HorizontalAlignment="Right"
@@ -763,7 +768,7 @@ function Play-Sound([string]$Name) {
     </TabControl>
 
     <!-- Footer -->
-    <Border Grid.Row="2" Background="#181825" Padding="18,0">
+    <Border x:Name="FooterBar" Grid.Row="2" Background="#181825" Padding="18,0">
       <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
         <Path Data="M12 11.5V16.5 M12 7.51L12.01 7.49889 M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" Stroke="#6c7086" StrokeThickness="1.5" Fill="Transparent" Stretch="Uniform" Width="14" Height="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
         <TextBlock Text="made by: ! ayeti | @xiari.i" FontSize="11" Foreground="#a6adc8"/>
@@ -806,6 +811,8 @@ $window = [Windows.Markup.XamlReader]::Load($reader)
 # Control references
 # ----------------------------------------------------------------------------
 $tabs          = $window.FindName('Tabs')
+$headerBar     = $window.FindName('HeaderBar')
+$footerBar     = $window.FindName('FooterBar')
 $txtPath       = $window.FindName('TxtPath')
 $btnBrowse     = $window.FindName('BtnBrowse')
 $lblPathStatus = $window.FindName('LblPathStatus')
@@ -850,271 +857,329 @@ $btnWinget     = $window.FindName('BtnWinget')
 # ----------------------------------------------------------------------------
 # Terms text
 # ----------------------------------------------------------------------------
-$termsFull = @"
-VENCORDSETUP - TERMS, PRIVACY & COOKIE POLICY
-=============================================
-LAST UPDATED: 2026-11-22
+$termsFull = @'
+# terms, privacy, cookie policy & setup-only disclaimer
 
-NOTE: These terms are provided as a template for protection. They are NOT
-legal advice. Consult a qualified attorney for enforceability in your
-jurisdiction. No terms can guarantee immunity from lawsuits.
+last updated: 2026-11-25
 
-=============================================
+this document is a template, not legal advice. have a qualified attorney review
+it for your jurisdiction. no set of terms guarantees immunity from lawsuits.
+the GUI shows the same terms before setup starts.
 
-READ THIS ENTIRE DOCUMENT. The "I AGREE TO THE TERMS" button stays disabled
-until you scroll to the bottom.
+---
 
-1. WHAT THIS TOOL DOES
-   - Checks Node.js 22+, Git and pnpm are installed.
-   - git clone https://github.com/Vendicated/Vencord into your chosen folder.
-   - git clone https://github.com/BlockTol/Quest-Auto-Complete
-   - git clone https://github.com/BlockTol/Discord-Fake-Deafen
-   - git clone https://github.com/BlockTol/Discord-Server-Cloner
-   - git clone https://github.com/BlockTol/DiscordTabs
-   - git clone https://github.com/ScattrdBlade/bigFileUpload
-   - pnpm install (downloads JavaScript packages from npm registry).
-   - pnpm build (compiles the Vencord bundle).
-    - node scripts/runInstaller.mjs fetches the official
-      VencordInstallerCli.exe from Vencord/Installer releases. It is not
-      compiled locally. The check runs on every inject so updates arrive.
-    - that CLI runs with -branch <chosen> -install (or -uninstall) and
-      patches Discord locally. Branch choices: auto, stable, ptb, canary.
-    - if launched from the one-line command, install.ps1 and its .sha256
-      file are downloaded from raw.githubusercontent.com first. The hash is
-      verified before the local file runs. The GUI is bundled inside it.
-    No services, scheduled tasks, or persistent background agents are
-    installed. Beeps are short-lived. A one-shot git fetch update check
-    runs on launch when a saved target folder exists. No registry changes
-    beyond what Discord, pnpm, or optional winget installs do themselves.
+## the short version
 
-    This tool is an installer and convenience layer only. It does not contain
-    Discord source, Vencord source, or plugin source. Those projects are
-    downloaded from their own repositories at run time and are written and
-    maintained by their own authors. We only automate cloning, building and
-    injecting. We do not write, patch or control the client modification.
-    Calling this a "setup tool" describes what we ship. It does not make the
-    modified client compliant with Discord's Terms of Service.
+this repository is a **setup tool**. it installs and configures software that
+other people wrote. it is not a Discord client modification, and it is not a
+Vencord or plugin source repository.
 
-2. WARNING - ACCOUNT RISK
-   Client modifications violate Discord's Terms of Service. Enforcement can
-   include account bans. Your account is at risk. If your account is
-   critical to you, do NOT proceed. You accept all risk.
-   Stating that this repo is only a setup tool does not change Discord's rules.
-   Discord applies its Terms to the client you run, not to who wrote the
-   installer. This disclaimer limits OUR liability. It does not grant
-   permission from Discord or prevent enforcement by Discord.
+using an **unauthorized modified Discord client violates Discord's Terms of
+Service**. saying "this is only a setup" does not change that. Discord applies
+its rules to the client you run, not to who wrote the installer. this disclaimer
+limits the authors' liability. it is not permission from Discord, and it will
+not stop Discord from enforcing its rules.
 
-3. THIRD-PARTY CODE
-   Plugins are authored by others (BlockTol, ScattrdBlade). Review their
-   source before enabling. We are not responsible for plugin behavior.
-   DiscordTabs reads account tokens from Discord's own local store to log a
-   new tab in. The token is passed inside Discord and is not written to a
-   file or sent to a server by that plugin. Enable it only if you accept
-   that access.
-   bigFileUpload sends files you choose to external hosting providers.
+enforcement can include account bans. if your account matters to you, do not
+use client mods.
 
-4. NO REDISTRIBUTION of patched Discord binaries.
+---
 
-5. LICENSES
-   This setup code: MIT. Vencord: GPL-3.0. DiscordTabs declares
-   GPL-3.0-or-later in its source headers. Other plugins have no license
-   file in their repositories. Review each repo before use.
+## 1. what this tool does
 
+- checks that Node.js 22+, Git and pnpm are installed
+- clones `Vendicated/Vencord` into a folder you choose
+- clones selected community userplugins from their own repositories
+- runs `pnpm install` and `pnpm build`
+- applies local compatibility edits to two community plugins so they build
+- checks the official `VencordInstallerCli.exe` release through Vencord's
+  installer helper and runs it against a local Discord install
+- supports branch choices `auto`, `stable`, `ptb`, `canary`
+- if launched from the one-line command, fetches `install.ps1` and
+  `install.ps1.sha256` from `raw.githubusercontent.com`; the hash is checked
+  before the local file runs, and the GUI and console are bundled inside it
 
+no services, scheduled tasks, or persistent background agents are installed.
+beeps are short-lived. a one-shot `git fetch origin` update check runs on launch
+when a saved target with a `.git` folder exists. no registry changes are made
+beyond what Discord, pnpm, or optional winget installs make themselves.
 
-6. PRIVACY POLICY (DETAILED)
-   - Scope: this tool runs entirely on your local machine.
-   - Data we collect: NONE. No telemetry, analytics, crash reports, usage
-     metrics, or any tracking. We have no servers.
-   - Network requests:
-        0. one-line launch only: fetch install.ps1 and install.ps1.sha256
-           from raw.githubusercontent.com. The GUI and console are bundled
-           in install.ps1; no separate GUI download.
-        1. git clone github.com/Vendicated/Vencord
-        2. git clone github.com/BlockTol/Quest-Auto-Complete
-        3. git clone github.com/BlockTol/Discord-Fake-Deafen
-        4. git clone github.com/BlockTol/Discord-Server-Cloner
-        5. git clone github.com/BlockTol/DiscordTabs
-        6. git clone github.com/ScattrdBlade/bigFileUpload
-        7. pnpm install -> npm registry (package downloads)
-        8. optional: winget install of missing prerequisites, only if you
-            click the prerequisite install button
-        9. one-shot git fetch origin on launch, only when a saved target
-           with a .git folder exists
-       10. official VencordInstallerCli.exe release check on each inject
-       11. Discord patching -> local files only, no network
-    DiscordTabs checks api.github.com for its own releases at runtime and
-    reads account tokens from Discord's local store. Tokens are not written
-    to files or sent to a server by the plugin.
+---
 
+## 2. warning - account risk
 
-   - Stored locally: your chosen folder (source + build output), Discord's
-     own config under %APPDATA%\Discord, pnpm/npm cache under your profile.
-   - Third parties: Discord Inc. and GitHub may log their own requests per
-     their policies. We do not control that.
-   - Vencord settings sync (optional, off by default): if enabled, Vencord
-     syncs via its own backend - see Vencord's own terms.
-   - Rights: delete the created folder to remove all local setup data. No
-     account, no registration, no data retention by us.
+unauthorized client modifications violate Discord's Terms of Service.
+enforcement can include account bans. your account is at risk. if your account
+is critical to you, do not proceed. you accept all risk.
 
-7. COOKIE POLICY (DETAILED)
-   - This tool sets ZERO cookies, zero localStorage, zero sessionStorage,
-     zero tracking identifiers of any kind.
-   - Discord client may set its own session/auth cookies during normal
-     operation. We do not read, modify, or transmit them.
-   - Vencord may store plugin settings in Discord's local storage.
-   - No cross-site cookies, no ad cookies, no analytics cookies.
-   - No cookie banner is shown because none are set by us.
+stating that this repo is only a setup tool does not change Discord's rules.
+Discord applies its Terms to the client you run, not to who wrote the installer.
+this disclaimer limits our liability. it does not grant permission from Discord
+or prevent enforcement by Discord.
 
-8. TERMS OF USE (DETAILED)
-   1. AS-IS: no warranty, no guarantee of fitness for purpose.
-   2. ACCOUNT RISK: client mods violate Discord ToS. You accept all risk to
-      your Discord account, including bans.
-   3. THIRD-PARTY CODE: plugins authored by others. Review source. We are
-      not responsible.
-   4. NO REDISTRIBUTION of patched Discord binaries.
-   5. LICENSES: setup code MIT; Vencord GPL-3.0; DiscordTabs source headers
-      declare GPL-3.0-or-later; other plugins: no license file in their
-      repositories. Respect each author's rights.
- 
-   6. NO MALICIOUS USE: do not use to harm others or violate laws/terms.
-   7. AGE: you must be old enough to use Discord in your region.
-   8. ACCEPTANCE: continuing = you read and accept all terms, warnings,
-      privacy policy and cookie policy above.
+---
 
-9. ASSETS
-   Sound design references bencho.dev (names mapped to beep patterns).
-   Icons reference iconoir.com (outline style). No copyrighted assets are
-   shipped by us. Vencord and plugins carry their own licenses.
+## 3. third-party code
 
-10. NO AFFILIATION
-    This tool is not affiliated with, endorsed by, or sponsored by Discord
-    Inc., Vencord, or any plugin author. All trademarks belong to their
-    respective owners. "Discord" is a trademark of Discord Inc.
+plugins are authored by others. author names below are upstream or
+self-declared. original provenance beyond those declarations was not
+independently verified. review source before enabling anything.
 
-11. ACCEPTABLE USE POLICY (AUP)
-    You agree NOT to use this tool to:
-    - violate any law, regulation, or third-party terms (including Discord's).
-    - harm, harass, defraud, or exploit any person.
-    - distribute malware, spam, or abusive content.
-    - bypass security controls of systems you do not own.
-    - use it in any way that could damage our reputation or expose us to
-      liability.
-    Violation may end your access to future updates.
+these plugins are community userplugins. they are not official, verified,
+endorsed, or supported by Vencord or Discord. all five are selected by default
+for convenience; that is not endorsement.
 
-12. LICENSE GRANT
-    The setup code in this repository is licensed under the MIT License.
-    MIT permits use, copying, modification, merging, publication,
-    distribution, sublicensing, and sale, provided the copyright notice
-    and permission notice are included in copies or substantial portions.
-    Third-party projects keep their own licenses. Vencord is GPL-3.0 and
-    DiscordTabs declares GPL-3.0-or-later in its source headers.
+DiscordTabs reads account tokens from Discord's own local store to log a new
+tab in. the token crosses Electron IPC in memory. it is not written to a token
+file or sent to a remote server by that plugin. enable it only if you accept
+that access. DiscordTabs checks `api.github.com` for its own releases at runtime.
 
+bigFileUpload sends files you choose to external hosting providers. its default
+proxy may be `cors.keiran0.workers.dev`. that proxy operator may see files and
+credentials. read its own self-hosting notes before enabling it.
 
+Quest-Auto-Complete, Discord-Fake-Deafen, Discord-Server-Cloner and DiscordTabs
+also check their own release endpoints on GitHub. the installer applies local
+compatibility edits to `Discord-Fake-Deafen/index.tsx` and
+`Discord-Server-Cloner/components/CloneModal.tsx`. those edits do not transfer
+ownership or relicense upstream code.
 
+---
 
+## 4. no redistribution
 
+do not redistribute patched Discord binaries.
 
+this setup repository does not ship plugin source. if modified GPL-covered
+plugin files are ever redistributed, preserve GPL notices, source availability,
+and change notices. MIT coverage here applies only to the setup code.
 
-13. LIMITATION OF LIABILITY
-    TO THE MAXIMUM EXTENT PERMITTED BY LAW, WE (THE AUTHORS) ARE NOT
-    LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR
-    PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO: loss of Discord account,
-    loss of data, loss of profits, service interruption, or any damages
-    arising from use or inability to use this tool. OUR TOTAL LIABILITY
-    SHALL NOT EXCEED THE AMOUNT YOU PAID FOR THIS TOOL (ZERO). SOME
-    JURISDICTIONS DO NOT ALLOW THESE LIMITATIONS; IN THOSE, OUR LIABILITY
-    IS LIMITED TO THE MAXIMUM EXTENT PERMITTED.
+---
 
-14. INDEMNIFICATION
-    You agree to indemnify and hold harmless the authors from any claims,
-    losses, damages, liabilities, and expenses (including legal fees)
-    arising from your use of this tool, your violation of these terms, or
-    your violation of any third-party rights or laws (including Discord's
-    Terms of Service).
+## 5. licenses
 
-15. DISCLAIMER OF WARRANTIES
-    THE TOOL IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTY OF
-    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES
-    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND
-    NON-INFRINGEMENT. WE DO NOT WARRANT THAT IT WILL BE ERROR-FREE,
-    UNINTERRUPTED, SECURE, OR COMPATIBLE WITH FUTURE DISCORD UPDATES.
+this setup code is MIT. Vencord is `GPL-3.0-or-later` in `package.json`; its
+`LICENSE` file is GPLv3 text with FSF boilerplate. Quest-Auto-Complete,
+DiscordTabs and bigFileUpload declare `GPL-3.0-or-later` in source headers and
+ship no LICENSE file. Discord-Fake-Deafen and Discord-Server-Cloner have no
+license file and no SPDX header found. review each repo before use.
 
-16. TERMINATION OF UPDATES
-    The MIT license for the setup code is perpetual for copies already
-    distributed. We may stop publishing updates or close distribution
-    channels at any time. This does not revoke rights already granted
-    under the MIT License.
+no license claim here grants rights beyond what the upstream author grants.
 
-17. GOVERNING LAW & DISPUTE RESOLUTION
-    These terms are governed by the laws of the jurisdiction in which the
-    primary author resides, without regard to conflict-of-law principles.
-    Any dispute shall first be attempted to be resolved informally by
-    contacting the author. If unresolved, disputes shall be submitted to
-    binding arbitration or the courts of that jurisdiction, as applicable.
-    You waive any right to a jury trial and to participate in class actions
-    to the extent permitted by law.
+---
 
-18. SEVERABILITY
-    If any provision of these terms is held invalid or unenforceable, the
-    remaining provisions continue in full force and effect.
+## 6. privacy policy
 
-19. ENTIRE AGREEMENT
-    These terms, together with the privacy and cookie policies above,
-    constitute the entire agreement between you and us regarding this
-    tool and supersede all prior agreements.
+- scope: the tool runs entirely on your local machine
+- data we collect: none. no telemetry, analytics, crash reports, usage metrics
+  or tracking. we have no servers
+- network requests:
+  0. one-line launch only: fetch `install.ps1` and `install.ps1.sha256` from
+     `raw.githubusercontent.com` (the GUI and console are bundled; no second
+     download)
+  1. `git clone` of Vencord and the selected plugin repositories
+  2. `pnpm install` to the npm registry
+  3. optional winget install of missing prerequisites, only if you request it
+  4. one-shot `git fetch origin` on GUI launch, only when a saved target with
+     a `.git` folder exists
+  5. official `VencordInstallerCli.exe` release check on each inject
+  6. plugin release checks to `api.github.com` for Quest-Auto-Complete,
+     Discord-Fake-Deafen, Discord-Server-Cloner and DiscordTabs
+  7. bigFileUpload uploads chosen files to selected external hosts and may use
+     `cors.keiran0.workers.dev`; its operator can see files and credentials
+  8. local patching only, no network
+- stored locally: the folder you pick, Discord's own config, Vencord settings,
+  quickCss, themes, backups under `%APPDATA%\VencordSetup`, and pnpm/npm cache
+- third parties: Discord, GitHub, npm and chosen file hosts log their own
+  requests under their policies
+- Vencord settings sync is optional, off by default, and handled by Vencord
+- rights: the clean action uninjects Vencord and keeps setup data. deleting the
+  chosen source folder removes the local clone and builds. settings, quickCss,
+  themes, backups, IndexedDB and `app.asar` backups live outside that folder and
+  are not removed by this tool. no account, no registration, no retention by us
 
-20. NO WAIVER
-    Failure to enforce any provision does not waive our right to enforce
-    it later.
+---
 
-21. CHANGES TO TERMS
-    We may update these terms at any time. Continued use after changes
-    constitutes acceptance for future updates. Changes do not revoke the
-    MIT rights already granted for distributed copies under section 12.
-    The "last updated" date is shown at the top.
+## 7. cookie policy
 
-22. CREDITS & THIRD-PARTY ASSETS
-    This tool uses and references the following. Source is cloned at run time;
-    none of it is bundled here. License status is taken from each repository.
-    - Vencord by Vendicated - https://github.com/Vendicated/Vencord
-      License: GPL-3.0.
-    - Quest-Auto-Complete by BlockTol
-      https://github.com/BlockTol/Quest-Auto-Complete
-      License: not stated in repository.
-    - Discord-Fake-Deafen by BlockTol
-      https://github.com/BlockTol/Discord-Fake-Deafen
-      License: not stated in repository.
-    - Discord-Server-Cloner by BlockTol
-      https://github.com/BlockTol/Discord-Server-Cloner
-      License: not stated in repository.
-    - DiscordTabs by BlockTol
-      https://github.com/BlockTol/DiscordTabs
-      License: GPL-3.0-or-later in source headers; no LICENSE file.
-    - bigFileUpload by ScattrdBlade
-      https://github.com/ScattrdBlade/bigFileUpload
-      License: not stated in repository.
-    - Sounds: bencho.dev (https://bencho.dev/sounds) - synthesized
-      WAV tones mapped to bencho sound names. No audio files shipped.
-    - Icons: iconoir.com (https://iconoir.com) - outline SVG icons
-      converted to WPF path data. MIT licensed.
-    - Segoe Fluent Icons (Microsoft, Windows built-in) - fallback glyphs.
-    - Node.js, Git, pnpm - their respective licenses apply.
-    - Discord is a trademark of Discord Inc. (not affiliated).
-    - This script and repository: MIT. Copyright (c) 2026 yetilukoss.
+- this tool sets zero cookies, zero localStorage, zero sessionStorage and zero
+  tracking identifiers
+- the Discord client may set its own session cookies. we do not read, modify or
+  transmit them
+- Vencord may store plugin settings in Discord's local storage
+- no advertising, analytics or cross-site cookies
+- no cookie banner is shown because none are set by us
 
-23. SETUP-ONLY DISCLAIMER
-     The code in this repository is a setup and automation helper. Vencord and
-     the user plugins are third-party projects fetched from their own
-     repositories at run time. We make no claim to authorship, ownership, or
-     endorsement of that code. The accurate description is: this repository
-     installs and configures existing tools faster. It is not the client
-     modification itself. That statement is factual. It is not a defense to a
-     Terms of Service violation and should not be presented as one.
+---
 
-LAST UPDATED: 2026-11-22
-END OF TERMS - scroll complete unlocks the agree button.
-"@
+## 8. terms of use
+
+1. as-is: no warranty, no guarantee of fitness for purpose.
+2. account risk: unauthorized client mods violate Discord ToS. you accept all
+   risk to your Discord account, including bans.
+3. third-party code: community plugins authored by others. review source.
+4. no redistribution of patched Discord binaries.
+5. licenses: setup code MIT; Vencord GPL-3.0-or-later; source-header plugins
+   GPL-3.0-or-later; two plugins have no license file or SPDX header.
+6. no malicious use: do not use to harm others or violate laws or terms.
+7. age: you must be old enough to use Discord in your region.
+8. acceptance: continuing means you read and accept all terms, warnings,
+   privacy policy and cookie policy above.
+
+---
+
+## 9. assets
+
+- sounds: bencho.dev names mapped to locally synthesized tones. no audio files
+  shipped. the name mapping is unverified.
+- icons: iconoir.com outline icons converted to WPF path data. MIT, copyright
+  (c) 2021 Luca Baggi.
+- Segoe Fluent Icons: Windows built-in fallback glyphs
+- no copyrighted audio or icon assets are shipped by this repository
+
+---
+
+## 10. no affiliation
+
+not affiliated with, endorsed by or sponsored by Discord Inc., Vencord, or any
+plugin author. "Discord" is a trademark of Discord Inc.
+
+---
+
+## 11. acceptable use policy
+
+you agree not to use this tool to:
+
+- violate any law, regulation or third-party terms, including Discord's
+- harm, harass, defraud or exploit anyone
+- distribute malware, spam or abusive content
+- bypass security controls of systems you do not own
+- use it in a way that could damage our reputation or expose us to liability
+
+violation may end your access to future updates.
+
+---
+
+## 12. license grant
+
+the setup code in this repository is licensed under the MIT License. MIT permits
+use, copying, modification, merging, publication, distribution, sublicensing,
+and sale, provided the copyright notice and permission notice are included in
+copies or substantial portions. third-party projects keep their own licenses.
+Vencord is GPL-3.0-or-later. three community plugins declare GPL-3.0-or-later
+in source headers. no plugin source is included here.
+
+---
+
+## 13. limitation of liability
+
+to the maximum extent permitted by law, the authors are not liable for
+indirect, incidental, special, consequential or punitive damages, including
+loss of account, loss of data, loss of profits, or service interruption. total
+liability is limited to the amount you paid for this tool, which is zero. some
+jurisdictions do not allow these limits, so they apply only to the extent
+permitted.
+
+---
+
+## 14. indemnification
+
+you agree to hold the authors harmless from claims, losses, damages,
+liabilities and expenses, including legal fees, arising from your use of this
+tool or your violation of these terms or third-party rights.
+
+---
+
+## 15. disclaimer of warranties
+
+the tool is provided "as is" and "as available", without warranty of any kind,
+express or implied, including merchantability, fitness for a particular purpose,
+title and non-infringement. we do not warrant it is error-free, uninterrupted,
+secure, or compatible with future Discord updates.
+
+---
+
+## 16. termination of updates
+
+the MIT license for the setup code is perpetual for copies already distributed.
+we may stop publishing updates or close distribution channels at any time. this
+does not revoke rights already granted under the MIT License.
+
+---
+
+## 17. governing law & dispute resolution
+
+these terms are governed by the law of the primary author's jurisdiction.
+disputes should first be raised informally. if unresolved, they go to courts or
+binding arbitration of that jurisdiction, as applicable. you waive a jury trial
+and class participation to the extent permitted by law.
+
+---
+
+## 18. severability
+
+if any provision is held invalid or unenforceable, the remaining provisions
+continue in full force.
+
+---
+
+## 19. entire agreement
+
+these terms, together with the privacy and cookie policies above, constitute
+the entire agreement between you and us regarding this tool and supersede all
+prior agreements.
+
+---
+
+## 20. no waiver
+
+failure to enforce any provision does not waive our right to enforce it later.
+
+---
+
+## 21. changes to terms
+
+we may update these terms at any time. continued use after changes constitutes
+acceptance for future updates. changes do not revoke the MIT rights already
+granted for distributed copies under section 12. the "last updated" date is
+shown at the top.
+
+---
+
+## 22. credits & third-party assets
+
+| project | author | source | license |
+| --- | --- | --- | --- |
+| Vencord | Vendicated (package author) | [repo](https://github.com/Vendicated/Vencord) | GPL-3.0-or-later; LICENSE text (c) FSF |
+| Quest-Auto-Complete | BlockTol | [repo](https://github.com/BlockTol/Quest-Auto-Complete) | GPL-3.0-or-later in source headers; no LICENSE file |
+| Discord-Fake-Deafen | BlockTol | [repo](https://github.com/BlockTol/Discord-Fake-Deafen) | no LICENSE file or SPDX header found |
+| Discord-Server-Cloner | BlockTol | [repo](https://github.com/BlockTol/Discord-Server-Cloner) | no LICENSE file or SPDX header found |
+| DiscordTabs | BlockTol | [repo](https://github.com/BlockTol/DiscordTabs) | GPL-3.0-or-later in source headers; no LICENSE file |
+| bigFileUpload | ScattrdBlade, creations, keircn | [repo](https://github.com/ScattrdBlade/bigFileUpload) | GPL-3.0-or-later in source headers; no LICENSE file; header credits Vendicated and contributors |
+| icons | Iconoir / Luca Baggi | [site](https://iconoir.com) | MIT (c) 2021 Luca Baggi |
+| sounds | bencho.dev names | [site](https://bencho.dev/sounds) | locally synthesized tones; no files shipped; name mapping UNVERIFIED |
+| fallback glyphs | Microsoft | Segoe Fluent Icons, Windows built-in | Windows license |
+
+setup code: MIT, copyright (c) 2026 yetilukoss. Node.js, Git and pnpm keep
+their own licenses.
+
+---
+
+## 23. setup-only disclaimer
+
+the code in this repository is a setup and automation helper. Vencord and the
+user plugins are third-party projects fetched from their own repositories at
+run time. we make no claim to authorship, ownership, or endorsement of those
+projects. the accurate description is: this repository installs and configures
+existing tools faster. that statement is factual. it is not a defense to a
+Terms of Service violation and should not be presented as one.
+
+---
+
+credits: Vendicated (Vencord), BlockTol (four plugins), ScattrdBlade, creations
+and keircn (bigFileUpload), Iconoir / Luca Baggi, bencho.dev names, Microsoft.
+full license status is in section 22. Discord is a trademark of Discord Inc.
+'@
 $termsText.Text = $termsFull
 
 # ----------------------------------------------------------------------------
@@ -1342,9 +1407,11 @@ function Remove-NestedDuplicate([string]$dir, [string]$name) {
         if (-not (Test-Path -LiteralPath $nested)) { continue }
         $hasIndex = @(Get-ChildItem -LiteralPath $dir -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^index\.tsx?$' }).Count -gt 0
         $isRepo = Test-Path -LiteralPath (Join-Path $nested '.git')
-        if ($hasIndex -or -not $isRepo) { Log "  keeping nested $candidate (source, not duplicate)."; continue }
-        Log "  removing nested duplicate: $nested"
-        try { Remove-Item -LiteralPath $nested -Recurse -Force -ErrorAction Stop } catch { Log "  WARN: could not remove $nested" }
+        if ($hasIndex -or -not $isRepo) {
+            Log "  keeping nested $candidate (source, not duplicate)."
+        } else {
+            Log "  keeping nested $candidate (preserve mode; no deletions)."
+        }
     }
 }
 
@@ -1352,15 +1419,13 @@ function Remove-NestedDuplicate([string]$dir, [string]$name) {
 # Terms scroll gating
 # ----------------------------------------------------------------------------
 $script:TermsAccepted = $false
+$script:TermsAtEnd = $false
 function Update-AgreeState {
     $sv = $termsScroll
+    $atBottom = ($sv.VerticalOffset + $sv.ViewportHeight) -ge ($sv.ExtentHeight - 2)
+    if ($sv.ExtentHeight -le $sv.ViewportHeight -or $atBottom) { $script:TermsAtEnd = $true }
     $was = $btnAgree.IsEnabled
-    if ($sv.ExtentHeight -le $sv.ViewportHeight) {
-        $btnAgree.IsEnabled = -not $script:TermsAccepted
-    } else {
-        $atBottom = ($sv.VerticalOffset + $sv.ViewportHeight) -ge ($sv.ExtentHeight - 2)
-        $btnAgree.IsEnabled = $atBottom -and (-not $script:TermsAccepted)
-    }
+    if (-not $script:TermsAccepted) { $btnAgree.IsEnabled = $script:TermsAtEnd }
     if (-not $was -and $btnAgree.IsEnabled) { [System.Windows.Input.Keyboard]::Focus($btnAgree) }
 }
 try {
@@ -1395,7 +1460,7 @@ $btnDecline.Add_Click({
 $btnNext.Add_Click({
     Play-Sound 'navigate'
     $tabs.IsEnabled = $true
-    $tabs.Effect = $null
+    foreach ($c in $blurTargets) { if ($c) { $c.Effect = $null } }
     $overlay.Visibility = 'Collapsed'
     $script:TermsAccepted = $true
     [System.Windows.Input.Keyboard]::Focus($tabs)
@@ -1403,7 +1468,8 @@ $btnNext.Add_Click({
 
 $blur = New-Object System.Windows.Media.Effects.BlurEffect
 $blur.Radius = 6
-$tabs.Effect = $blur
+$blurTargets = @($headerBar, $tabs, $footerBar)
+foreach ($c in $blurTargets) { if ($c) { $c.Effect = $blur } }
 
 # ----------------------------------------------------------------------------
 # Prerequisite check
@@ -1914,32 +1980,24 @@ $btnUninstall.Add_Click({
         return
     }
     if ($chkDryRun.IsChecked) {
-        Log "DRY-RUN: would uninstall from Discord and delete $target"
+        Log "DRY-RUN: would remove Vencord injection and keep $target"
         Play-Sound 'success'
         return
     }
-    $confirm = [System.Windows.MessageBox]::Show("Uninstall Vencord from Discord AND delete the folder (full wipe)?`n$target", "VencordSetup", 'YesNo', 'Warning')
+    $confirm = [System.Windows.MessageBox]::Show(
+        "Remove Vencord injection and keep all setup data?`n`nPreserved: settings, quickCss, themes, IndexedDB, app.asar stub, _app.asar, backups, scripts, repo clone, dist, userplugins.`n$target",
+        "VencordSetup", 'YesNo', 'Warning')
     if ($confirm -ne 'Yes') { return }
     Play-Sound 'navigate'
     Set-Busy $true
-    $pushed = $false
     try {
-        Push-Location $target
-        $pushed = $true
-        Log "=== UNINSTALL (full wipe) ==="
+        Log "=== CLEANUP (Recommended) ==="
         Invoke-VencordCli -Target $target -Uninstall
-        Log "  OK"
-        Play-Sound 'success'
-        if ($pushed) { Pop-Location; $pushed = $false }
-        Log "  deleting folder: $target"
-        try { Remove-Item -LiteralPath $target -Recurse -Force -ErrorAction Stop } catch { throw "Folder delete failed: $($_.Exception.Message)" }
-        if (Test-Path -LiteralPath $target) { throw "Folder still exists after delete." }
-        Log "  folder deleted."
+        Log "  injection removed; all setup data preserved."
         Play-Sound 'success'
     } catch {
         Log "ERROR: $($_.Exception.Message)"; Play-Sound 'error'
     } finally {
-        if ($pushed) { Pop-Location }
         Set-Busy $false
         Set-Progress 100
     }

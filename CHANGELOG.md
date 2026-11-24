@@ -4,6 +4,7 @@ each version has its own note. open a file to see what changed and what it means
 
 | version | date | short meaning | full note |
 | --- | --- | --- | --- |
+| v2.2 | 2026-11-25 | one command, safe cleanup, accurate terms and credits | [v2.2](UPDATES/v2.2.md) |
 | v2.1 | 2026-11-24 | pnpm runs in the cloned folder; build failure fixed | [v2.1](UPDATES/v2.1.md) |
 | v2.0 | 2026-11-22 | trusted inject, responsive gui, one public command | [v2.0](UPDATES/v2.0.md) |
 | v1.9 | 2026-11-22 | bundle warnings are now real | [v1.9](UPDATES/v1.9.md) |

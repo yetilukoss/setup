@@ -1,7 +1,4 @@
-made by !YETI
-```
-!yetiluk
-```
+made by: yetilukoss (!YETI)
 
 # vencord-setup
 
@@ -28,30 +25,21 @@ the launcher is self-contained. it carries the GUI and console scripts as
 compressed payloads, verifies both SHA-256 hashes, extracts them to a
 hash-derived folder under `%TEMP%`, and starts the GUI in a new STA shell.
 
-### one-line launch
+### one command
 
-one command, no `iex`, SHA-256 gated. paste the form for your shell.
+one hash-gated command. no `iex`, no execution-policy bypass, `RemoteSigned`.
+paste the same line in PowerShell, cmd or Win+R. no shell-specific escaping.
 
 PowerShell:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy RemoteSigned -Command "`$u='https://raw.githubusercontent.com/yetilukoss/vencord-setup/main'; `$p=Join-Path `$env:TEMP 'vencord-install.ps1'; `$s=Join-Path `$env:TEMP 'vencord-install.ps1.sha256'; Invoke-WebRequest -UseBasicParsing -Uri (`$u + '/install.ps1') -OutFile `$p; Invoke-WebRequest -UseBasicParsing -Uri (`$u + '/install.ps1.sha256') -OutFile `$s; `$want=(Get-Content `$s).Trim().Split()[0].ToUpperInvariant(); `$got=(Get-FileHash `$p -Algorithm SHA256).Hash.ToUpperInvariant(); if (`$got -ne `$want) { throw 'hash mismatch' }; Unblock-File `$p -ErrorAction SilentlyContinue; & `$p"
+powershell -NoProfile -ExecutionPolicy RemoteSigned -EncodedCommand JAB1AD0AJwBoAHQAdABwAHMAOgAvAC8AcgBhAHcALgBnAGkAdABoAHUAYgB1AHMAZQByAGMAbwBuAHQAZQBuAHQALgBjAG8AbQAvAHkAZQB0AGkAbAB1AGsAbwBzAHMALwB2AGUAbgBjAG8AcgBkAC0AcwBlAHQAdQBwAC8AbQBhAGkAbgAnADsAIAAkAHAAPQBKAG8AaQBuAC0AUABhAHQAaAAgACQAZQBuAHYAOgBUAEUATQBQACAAJwB2AGUAbgBjAG8AcgBkAC0AaQBuAHMAdABhAGwAbAAuAHAAcwAxACcAOwAgACQAcwA9AEoAbwBpAG4ALQBQAGEAdABoACAAJABlAG4AdgA6AFQARQBNAFAAIAAnAHYAZQBuAGMAbwByAGQALQBpAG4AcwB0AGEAbABsAC4AcABzADEALgBzAGgAYQAyADUANgAnADsAIABbAE4AZQB0AC4AUwBlAHIAdgBpAGMAZQBQAG8AaQBuAHQATQBhAG4AYQBnAGUAcgBdADoAOgBTAGUAYwB1AHIAaQB0AHkAUAByAG8AdABvAGMAbwBsAD0AWwBOAGUAdAAuAFMAZQBjAHUAcgBpAHQAeQBQAHIAbwB0AG8AYwBvAGwAVAB5AHAAZQBdADoAOgBUAGwAcwAxADIAOwAgAEkAbgB2AG8AawBlAC0AVwBlAGIAUgBlAHEAdQBlAHMAdAAgAC0AVQBzAGUAQgBhAHMAaQBjAFAAYQByAHMAaQBuAGcAIAAtAFUAcgBpACAAKAAkAHUAIAArACAAJwAvAGkAbgBzAHQAYQBsAGwALgBwAHMAMQAnACkAIAAtAE8AdQB0AEYAaQBsAGUAIAAkAHAAOwAgAEkAbgB2AG8AawBlAC0AVwBlAGIAUgBlAHEAdQBlAHMAdAAgAC0AVQBzAGUAQgBhAHMAaQBjAFAAYQByAHMAaQBuAGcAIAAtAFUAcgBpACAAKAAkAHUAIAArACAAJwAvAGkAbgBzAHQAYQBsAGwALgBwAHMAMQAuAHMAaABhADIANQA2ACcAKQAgAC0ATwB1AHQARgBpAGwAZQAgACQAcwA7ACAAJAB3AGEAbgB0AD0AKABHAGUAdAAtAEMAbwBuAHQAZQBuAHQAIAAkAHMAKQAuAFQAcgBpAG0AKAApAC4AUwBwAGwAaQB0ACgAKQBbADAAXQAuAFQAbwBVAHAAcABlAHIASQBuAHYAYQByAGkAYQBuAHQAKAApADsAIAAkAGcAbwB0AD0AKABHAGUAdAAtAEYAaQBsAGUASABhAHMAaAAgACQAcAAgAC0AQQBsAGcAbwByAGkAdABoAG0AIABTAEgAQQAyADUANgApAC4ASABhAHMAaAAuAFQAbwBVAHAAcABlAHIASQBuAHYAYQByAGkAYQBuAHQAKAApADsAIABpAGYAIAAoACQAZwBvAHQAIAAtAG4AZQAgACQAdwBhAG4AdAApACAAewAgAHQAaAByAG8AdwAgACcAaABhAHMAaAAgAG0AaQBzAG0AYQB0AGMAaAAnACAAfQA7ACAAVQBuAGIAbABvAGMAawAtAEYAaQBsAGUAIAAkAHAAIAAtAEUAcgByAG8AcgBBAGMAdABpAG8AbgAgAFMAaQBsAGUAbgB0AGwAeQBDAG8AbgB0AGkAbgB1AGUAOwAgACYAIAAkAHAA
 ```
 
-cmd or Win+R:
-
-```cmd
-powershell -NoProfile -ExecutionPolicy RemoteSigned -Command "$u='https://raw.githubusercontent.com/yetilukoss/vencord-setup/main'; $p=Join-Path $env:TEMP 'vencord-install.ps1'; $s=Join-Path $env:TEMP 'vencord-install.ps1.sha256'; Invoke-WebRequest -UseBasicParsing -Uri ($u + '/install.ps1') -OutFile $p; Invoke-WebRequest -UseBasicParsing -Uri ($u + '/install.ps1.sha256') -OutFile $s; $want=(Get-Content $s).Trim().Split()[0].ToUpperInvariant(); $got=(Get-FileHash $p -Algorithm SHA256).Hash.ToUpperInvariant(); if ($got -ne $want) { throw 'hash mismatch' }; Unblock-File $p -ErrorAction SilentlyContinue; & $p"
-```
-
-PowerShell needs the backticks. without them, the parent shell expands `$p`
-before the child runs, and the line ends with a bare `&`.
-
-two small text files land in `%TEMP%`. the SHA-256 gate runs before execution.
+the downloaded launcher is checked against `install.ps1.sha256` before it runs.
 the launcher then verifies both bundled payloads and starts the GUI in STA.
 the terminal stays open until the GUI closes. a non-zero GUI exit code is
-reported. the older `irm ... | iex` form is retired because Defender flags that
-exact pattern.
+reported. two small text files land in `%TEMP%`.
 
 | file | use |
 | --- | --- |
@@ -77,8 +65,9 @@ exact pattern.
 powershell -STA -ExecutionPolicy RemoteSigned -File .\tools\vencord-setup\VencordSetupGUI.ps1
 ```
 
-first run shows the terms modal. scroll to the end, agree, then next. decision
-prompts and error dialogs remain; the completion popup does not.
+first run shows the terms modal. read to the end, click `I AGREE TO THE TERMS`,
+then `Next`. decision prompts and error dialogs remain; the completion popup
+does not.
 
 </details>
 
@@ -105,7 +94,8 @@ add `-Branch auto|stable|ptb|canary`, `-Target "C:\path\Vencord"`, `-Yes`, or
 
 - five tabs: welcome, prereqs, location, plugins, install
 - five toggleable plugin cards with live selection count
-- install, repair, update, re-inject, uninject
+- `Keep plugins (Recommended)` restores the default selection
+- install, repair, update, re-inject, clean Vencord junk
 - dry-run mode and sound toggle
 - log export and clear-log button
 - backup of `app.asar` before patching
@@ -123,16 +113,21 @@ add `-Branch auto|stable|ptb|canary`, `-Target "C:\path\Vencord"`, `-Yes`, or
 | fake deafen | BlockTol | [repo](https://github.com/BlockTol/Discord-Fake-Deafen) |
 | server cloner | BlockTol | [repo](https://github.com/BlockTol/Discord-Server-Cloner) |
 | discord tabs | BlockTol | [repo](https://github.com/BlockTol/DiscordTabs) |
-| big file upload | ScattrdBlade | [repo](https://github.com/ScattrdBlade/bigFileUpload) |
+| big file upload | ScattrdBlade, creations, keircn | [repo](https://github.com/ScattrdBlade/bigFileUpload) |
 
-each plugin is community code. review the source before enabling it. license
-status is in [TERMS.md](TERMS.md).
+these are community userplugins. they are not official, verified, endorsed, or
+supported by Vencord or Discord. all five are selected by default for
+convenience; that is not endorsement. turn off any plugin you do not want.
+license status is in [TERMS.md](TERMS.md).
 
 </details>
 
 > this repo is a setup tool. it does not contain Discord, Vencord or plugin
-> source. those are fetched from their own repositories at run time. client
-> mods may violate discord terms of service. read [TERMS.md](TERMS.md) first.
+> source. those are fetched from their own repositories at run time.
+> unauthorized client modifications violate Discord Terms of Service. read
+> [TERMS.md](TERMS.md) first. not affiliated with, endorsed by, or sponsored by
+> Discord Inc., Vencord, or any plugin author. "Discord" is a trademark of
+> Discord Inc.
 
 ---
 
@@ -228,25 +223,27 @@ the GUI terms mirror it. read it before you run the installer.
 | terms block | scroll gating, privacy, cookies, licenses, credits and setup-only scope |
 | prereq check | finds node 22+, git, pnpm; optional winget; PATH refresh |
 | location tab | folder picker, drag-and-drop path, saved settings, safe-path guard |
-| plugins tab | five community plugin cards, toggles, live count, select all / clear all |
+| plugins tab | five community plugin cards, toggles, live count, keep-plugins default |
 | install | clone core + selected plugins, compat patch, `pnpm install`, `pnpm build` |
 | inject | official `VencordInstallerCli.exe` release check, trusted exit codes |
 | update | clone missing selected plugins, pull selected repos, rebuild, inject |
-| uninstall | uninject only; source folder preserved |
+| clean | uninject only; source folder, settings and plugins preserved |
 | safety | backup before overwrite, `app.asar` backup, dry-run, guarded handlers, log export |
 
-update log: v2.1 fixed the pnpm working directory, so build runs inside the
-cloned Vencord folder. v2.0 hardened inject, responsive progress,
-selection-aware updates, accurate terms and a self-contained one-line launcher.
-v1.9 fixed plugin-name bundle warnings.
+update log: v2.2 replaces the split launcher forms with one encoded command,
+makes cleanup preservation-only, and corrects terms, licenses and credits.
+v2.1 fixed the pnpm working directory, so build runs inside the cloned Vencord
+folder. v2.0 hardened inject, responsive progress, selection-aware updates,
+accurate terms and a self-contained one-line launcher. v1.9 fixed plugin-name
+bundle warnings.
 
 each version has its own note in [CHANGELOG.md](CHANGELOG.md) and under
 [UPDATES](UPDATES/). every note says what changed and what it means.
 
-what we did: built the GUI, added five community plugins, fixed XAML and pnpm
-errors, added compat patches for upstream API changes, hardened failure paths,
-and kept only setup files in this repo. no prompt dumps are shipped; the terms
-gate and interactive confirmations are part of the tool.
+what changed here: built the GUI, added five community plugins, fixed XAML and
+pnpm errors, added compat patches for upstream API changes, hardened failure
+paths, and kept only setup files in this repo. no prompt dumps are shipped; the
+terms gate and interactive confirmations are part of the tool.
 
 ---
 
