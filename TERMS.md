@@ -175,7 +175,7 @@ no license claim here grants rights beyond what the upstream author grants.
 - sounds: bencho.dev names mapped to locally synthesized tones. no audio files
   shipped. the name mapping is unverified.
 - icons: iconoir.com outline icons converted to WPF path data. MIT, copyright
-  (c) 2021 Luca Baggi.
+  (c) 2021 Luca Burgio.
 - Segoe Fluent Icons: Windows built-in fallback glyphs
 - no copyrighted audio or icon assets are shipped by this repository
 
@@ -298,7 +298,7 @@ shown at the top.
 | Discord-Server-Cloner | BlockTol | [repo](https://github.com/BlockTol/Discord-Server-Cloner) | no LICENSE file or SPDX header found |
 | DiscordTabs | BlockTol | [repo](https://github.com/BlockTol/DiscordTabs) | GPL-3.0-or-later in source headers; no LICENSE file |
 | bigFileUpload | ScattrdBlade, creations, keircn | [repo](https://github.com/ScattrdBlade/bigFileUpload) | GPL-3.0-or-later in source headers; no LICENSE file; header credits Vendicated and contributors |
-| icons | Iconoir / Luca Baggi | [site](https://iconoir.com) | MIT (c) 2021 Luca Baggi |
+| icons | Iconoir / Luca Burgio | [site](https://iconoir.com) | MIT (c) 2021 Luca Burgio |
 | sounds | bencho.dev names | [site](https://bencho.dev/sounds) | locally synthesized tones; no files shipped; name mapping UNVERIFIED |
 | fallback glyphs | Microsoft | Segoe Fluent Icons, Windows built-in | Windows license |
 
@@ -319,5 +319,5 @@ Terms of Service violation and should not be presented as one.
 ---
 
 credits: Vendicated (Vencord), BlockTol (four plugins), ScattrdBlade, creations
-and keircn (bigFileUpload), Iconoir / Luca Baggi, bencho.dev names, Microsoft.
+and keircn (bigFileUpload), Iconoir / Luca Burgio, bencho.dev names, Microsoft.
 full license status is in section 22. Discord is a trademark of Discord Inc.

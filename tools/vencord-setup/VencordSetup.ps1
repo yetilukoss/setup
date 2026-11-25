@@ -268,7 +268,7 @@ function Show-Terms {
         'DiscordTabs by BlockTol - github.com/BlockTol/DiscordTabs',
         'bigFileUpload by ScattrdBlade, creations, keircn - github.com/ScattrdBlade/bigFileUpload',
         'Community plugins: not official, verified, endorsed or supported by Vencord or Discord.',
-        'Icons: iconoir.com / Luca Baggi (MIT). Sounds: bencho.dev names, synthesized tones.',
+        'Icons: iconoir.com / Luca Burgio (MIT). Sounds: bencho.dev names, synthesized tones.',
         'Setup code: MIT (c) 2026 yetilukoss.'
     ) 'Cyan'
 
